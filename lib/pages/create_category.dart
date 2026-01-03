@@ -65,7 +65,7 @@ class _CreateCategoryState extends State<CreateCategory> {
         elevation: 0,
         leading: TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/category');
             },
             child: const Text(
               'Cancel',
