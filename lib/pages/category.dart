@@ -1,3 +1,4 @@
+import 'package:dolist/components/bottom_navigation_bar_component.dart';
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -44,7 +45,7 @@ class _CategoryState extends State<Category> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: BottomNavigationBarComponent(currentPage: '/category'),
     );
   }
 
@@ -95,73 +96,6 @@ class _CategoryState extends State<Category> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNavItem(
-              icon: Icons.check_circle_outline,
-              label: 'Tasks',
-              isActive: false,
-            ),
-            _buildNavItem(
-              icon: Icons.apps,
-              label: 'Categories',
-              isActive: true,
-            ),
-            _buildNavItem(
-              icon: Icons.calendar_today_outlined,
-              label: 'Calendar',
-              isActive: false,
-            ),
-            _buildNavItem(
-              icon: Icons.settings_outlined,
-              label: 'Settings',
-              isActive: false,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required bool isActive,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color: isActive ? AppColors.secondary : AppColors.grayText,
-          size: 26,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: isActive ? AppColors.secondary : AppColors.grayText,
-            fontSize: 12,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-      ],
     );
   }
 }

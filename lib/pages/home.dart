@@ -1,13 +1,18 @@
 import 'dart:math';
 
+import 'package:dolist/components/bottom_navigation_bar_component.dart';
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    List<dynamic> categories = Hive.box('categories').values.toList();
+    
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SafeArea(
@@ -19,7 +24,7 @@ class Home extends StatelessWidget {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 24),
-                _buildStatusCards(),
+                _buildStatusCards(categories.length.toString()),
                 const SizedBox(height: 24),
                 _buildTodaysFocusCard(),
                 const SizedBox(height: 24),
@@ -32,7 +37,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: BottomNavigationBarComponent(currentPage: '/home'),
     );
   }
 
@@ -83,20 +88,20 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusCards() {
+  Widget _buildStatusCards(String totalCategories) {
     return Row(
       children: [
         Expanded(
           child: _StatusCard(
-            label: 'Pending',
-            count: '12',
+            label: 'Category',
+            count: totalCategories,
             isActive: false,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _StatusCard(
-            label: 'In Progress',
+            label: 'Task',
             count: '5',
             isActive: true,
           ),
@@ -104,7 +109,7 @@ class Home extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _StatusCard(
-            label: 'Done',
+            label: 'Completed',
             count: '28',
             isActive: false,
           ),
@@ -330,63 +335,6 @@ class Home extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNavItem(Icons.home, true),
-            _buildNavItem(Icons.check_circle_outline, false),
-            _buildAddButton(),
-            _buildNavItem(Icons.bar_chart, false),
-            _buildNavItem(Icons.settings, false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, bool isActive) {
-    return Icon(
-      icon,
-      color: isActive ? AppColors.secondary : AppColors.grayText,
-      size: 28,
-    );
-  }
-
-  Widget _buildAddButton() {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.secondary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.add,
-        color: Colors.white,
-        size: 32,
-      ),
     );
   }
 }
