@@ -2,12 +2,16 @@ import 'dart:math';
 
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    List<dynamic> categories = Hive.box('categories').values.toList();
+    
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SafeArea(
@@ -19,7 +23,7 @@ class Home extends StatelessWidget {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 24),
-                _buildStatusCards(),
+                _buildStatusCards(categories.length.toString()),
                 const SizedBox(height: 24),
                 _buildTodaysFocusCard(),
                 const SizedBox(height: 24),
@@ -83,13 +87,13 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusCards() {
+  Widget _buildStatusCards(String totalCategories) {
     return Row(
       children: [
         Expanded(
           child: _StatusCard(
             label: 'Category',
-            count: '12',
+            count: totalCategories,
             isActive: false,
           ),
         ),

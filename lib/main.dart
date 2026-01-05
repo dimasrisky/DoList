@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Inter"
       ),
       debugShowCheckedModeBanner: false,
-      home: Category(),
+      home: Home(),
       routes: {
         '/home': (context) => Home(),
         '/category': (context) => Category(),
