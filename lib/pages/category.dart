@@ -1,11 +1,19 @@
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class Category extends StatelessWidget {
+class Category extends StatefulWidget {
   const Category({super.key});
 
   @override
+  State<Category> createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  @override
   Widget build(BuildContext context) {
+    List<dynamic> categories = Hive.box('categories').values.toList();
+
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SafeArea(
@@ -15,49 +23,21 @@ class Category extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1.0,
-                  children: const [
-                    _CategoryCard(
-                      icon: Icons.work_outline,
-                      title: 'Work',
-                      taskCount: '8 Tasks',
-                      progress: 0.65,
-                      color: Color(0xFF4285F4),
-                    ),
-                    _CategoryCard(
-                      icon: Icons.person_outline,
-                      title: 'Personal',
-                      taskCount: '3 Tasks',
-                      progress: 0.40,
-                      color: Color(0xFF9C27B0),
-                    ),
-                    _CategoryCard(
-                      icon: Icons.shopping_cart_outlined,
-                      title: 'Shopping',
-                      taskCount: '12 Items',
-                      progress: 0.75,
-                      color: Color(0xFFFF9800),
-                    ),
-                    _CategoryCard(
-                      icon: Icons.favorite_border,
-                      title: 'Health',
-                      taskCount: '2 Tasks',
-                      progress: 0.30,
-                      color: Color(0xFFE91E63),
-                    ),
-                    _CategoryCard(
-                      icon: Icons.attach_money,
-                      title: 'Finance',
-                      taskCount: '4 Tasks',
-                      progress: 0.50,
-                      color: Color(0xFF4CAF50),
-                    ),
-                    _AddCategoryCard(),
-                  ],
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 1.0,
+                  ),
+                  itemCount: categories.length + 1,
+                  itemBuilder: (context, index) {
+                    if(index == categories.length){
+                      return const _AddCategoryCard();
+                    }
+                    return _CategoryCard(id: categories[index]['id'], icon: categories[index]['icon'], title: categories[index]['title'], taskCount: '10', progress: 10, color: categories[index]['color'], updatedMethod: () => setState(() {}));
+                  },
+                  
                 ),
               ),
             ),
@@ -187,18 +167,22 @@ class Category extends StatelessWidget {
 }
 
 class _CategoryCard extends StatelessWidget {
-  final IconData icon;
+  final Function updatedMethod;
+  final String id;
+  final int icon;
   final String title;
   final String taskCount;
   final double progress;
-  final Color color;
+  final int color;
 
   const _CategoryCard({
+    required this.id,
     required this.icon,
     required this.title,
     required this.taskCount,
     required this.progress,
     required this.color,
+    required this.updatedMethod,
   });
 
   @override
@@ -219,19 +203,50 @@ class _CategoryCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
+                  color: Color(color).withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  icon,
-                  color: color,
+                  IconData(icon, fontFamily: 'MaterialIcons'),
+                  color: Color(color),
                   size: 24,
-                ),
+                )
               ),
-              Icon(
-                Icons.more_vert,
-                color: AppColors.grayText,
-                size: 20,
+              PopupMenuButton(
+                color: AppColors.gray,
+                icon: Icon(
+                  Icons.more_vert,
+                  color: AppColors.grayText,
+                  size: 20,
+                ),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: AppColors.primaryText,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    Hive.box('categories').delete(id);
+                    updatedMethod();
+                  }
+                },
               ),
             ],
           ),
@@ -258,7 +273,7 @@ class _CategoryCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: AppColors.primary,
-              valueColor: AlwaysStoppedAnimation<Color>(color),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(color)),
               minHeight: 6,
             ),
           ),
@@ -273,42 +288,45 @@ class _AddCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.grayText.withValues(alpha: 0.3),
-          width: 2,
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/category/create'),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.gray,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.grayText.withValues(alpha: 0.3),
+            width: 2,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: AppColors.grayText.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.grayText.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.add,
+                color: AppColors.grayText,
+                size: 28,
+              ),
             ),
-            child: Icon(
-              Icons.add,
-              color: AppColors.grayText,
-              size: 28,
+            const SizedBox(height: 12),
+            Text(
+              'Add Category',
+              style: TextStyle(
+                color: AppColors.grayText,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Add Category',
-            style: TextStyle(
-              color: AppColors.grayText,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

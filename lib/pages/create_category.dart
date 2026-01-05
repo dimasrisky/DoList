@@ -42,9 +42,11 @@ class _CreateCategoryState extends State<CreateCategory> {
 
   void submitCategory(String title, Color color, IconData icon){
     final categoryBox = Hive.box('categories');
-    UuidV4 uuid = UuidV4();
+    String uuid = UuidV4().generate();
 
-    categoryBox.put(uuid.toString(), { 'title': title, 'color': color.toARGB32(), 'icon': icon.codePoint });
+    categoryBox.put(uuid, { 'id': uuid, 'title': title, 'color': color.toARGB32(), 'icon': icon.codePoint });
+
+    Navigator.pushNamed(context, '/category');
   }
 
   @override
@@ -63,7 +65,7 @@ class _CreateCategoryState extends State<CreateCategory> {
         elevation: 0,
         leading: TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/category');
             },
             child: const Text(
               'Cancel',
