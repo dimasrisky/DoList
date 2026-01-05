@@ -88,7 +88,7 @@ class Home extends StatelessWidget {
       children: [
         Expanded(
           child: _StatusCard(
-            label: 'Pending',
+            label: 'Category',
             count: '12',
             isActive: false,
           ),
@@ -96,7 +96,7 @@ class Home extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _StatusCard(
-            label: 'In Progress',
+            label: 'Task',
             count: '5',
             isActive: true,
           ),
@@ -104,7 +104,7 @@ class Home extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _StatusCard(
-            label: 'Done',
+            label: 'Completed',
             count: '28',
             isActive: false,
           ),
