@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dolist/components/bottom_navigation_bar_component.dart';
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -36,7 +37,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: BottomNavigationBarComponent(currentPage: '/home'),
     );
   }
 
@@ -334,63 +335,6 @@ class Home extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNavItem(Icons.home, true),
-            _buildNavItem(Icons.check_circle_outline, false),
-            _buildAddButton(),
-            _buildNavItem(Icons.bar_chart, false),
-            _buildNavItem(Icons.settings, false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, bool isActive) {
-    return Icon(
-      icon,
-      color: isActive ? AppColors.secondary : AppColors.grayText,
-      size: 28,
-    );
-  }
-
-  Widget _buildAddButton() {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.secondary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.add,
-        color: Colors.white,
-        size: 32,
-      ),
     );
   }
 }

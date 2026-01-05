@@ -1,3 +1,4 @@
+import 'package:dolist/components/bottom_navigation_bar_component.dart';
 import 'package:dolist/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -171,7 +172,7 @@ class _CreateCategoryState extends State<CreateCategory> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: BottomNavigationBarComponent(currentPage: '/category/create'),
     );
   }
 
@@ -256,63 +257,6 @@ class _CreateCategoryState extends State<CreateCategory> {
             ),
           );
         }),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: AppColors.gray,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNavItem(Icons.home_outlined, false),
-            _buildNavItem(Icons.search_outlined, false),
-            _buildAddButton(),
-            _buildNavItem(Icons.calendar_today_outlined, false),
-            _buildNavItem(Icons.person_outline, false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, bool isActive) {
-    return Icon(
-      icon,
-      color: isActive ? AppColors.secondary : AppColors.grayText,
-      size: 26,
-    );
-  }
-
-  Widget _buildAddButton() {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.secondary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.add,
-        color: Colors.white,
-        size: 32,
       ),
     );
   }
